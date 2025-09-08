@@ -49,6 +49,8 @@ define( 'YTO_CAP', 'manage_categories' );
 // Internal cache key registry (used so we can clear only our own caches on deactivation).
 define( 'YTO_CACHE_REGISTRY_OPTION', 'yak_term_order_cache_keys' );
 
+
+
 /**
  * -------------------------------------------------------------------------
  * Autoloader (PSR-4-ish for the Yak_Term_Order\ namespace)

@@ -124,3 +124,43 @@ function yto_sort_terms( array $terms ): array {
 
 	return $terms;
 }
+
+/**
+ * Persist sibling order as sequential integers (10, 20, 30 …).
+ *
+ * @param string $taxonomy     Taxonomy slug.
+ * @param int    $parent_id    Parent term ID (0 for top-level).
+ * @param int[]  $ordered_ids  Term IDs in the desired visual order.
+ * @param int    $start        Starting value (default 10).
+ * @param int    $step         Increment (default 10).
+ * @return void
+ */
+function yto_set_sibling_order( string $taxonomy, int $parent_id, array $ordered_ids, int $start = 10, int $step = 10 ): void {
+	$ordered_ids = array_values( array_unique( array_map( 'absint', $ordered_ids ) ) );
+	if ( empty( $ordered_ids ) ) {
+		return;
+	}
+
+	$pos = $start;
+
+	foreach ( $ordered_ids as $tid ) {
+		$term = get_term( $tid, $taxonomy );
+		if ( $term && ! is_wp_error( $term ) && (int) $term->parent === (int) $parent_id ) {
+			update_term_meta( $tid, YTO_META_KEY, (int) $pos );
+			$pos += $step;
+		}
+	}
+
+	// Invalidate caches so admin lists reflect changes immediately.
+	clean_term_cache( $ordered_ids, $taxonomy, true );
+
+	/**
+	 * Fires after Yak Term Order updates a branch.
+	 *
+	 * @param string $taxonomy
+	 * @param int    $parent_id
+	 * @param array  $ordered_ids
+	 * @param int    $user_id
+	 */
+	do_action( 'yak_term_order/updated', $taxonomy, $parent_id, $ordered_ids, get_current_user_id() );
+}

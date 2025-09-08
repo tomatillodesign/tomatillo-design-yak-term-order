@@ -1,0 +1,19 @@
+.yto-list { list-style:none; margin:0; padding:0; max-width:720px; }
+.yto-item { display:flex; align-items:center; gap:.75rem; padding:.5rem .75rem; border:1px solid #dcdcde; border-radius:8px; margin-bottom:.5rem; background:#fff; }
+.yto-item:focus { outline:2px solid #72aee6; outline-offset:2px; }
+.yto-handle { cursor:grab; font-size:18px; line-height:1; user-select:none; }
+.yto-name { flex:1; min-width:180px; }
+.yto-meta { opacity:.7; font-size:12px; }
+.yto-actions { display:flex; gap:6px; }
+.yto-actions .button { height:28px; line-height:26px; padding:0 8px; }
+.yto-placeholder { height:40px; border:2px dashed #72aee6; border-radius:6px; margin-bottom:.5rem; background:#f6fbff; }
+.yto-heading { margin-top:1rem; }
+.yto-sep { margin: 16px 0; }
+
+/* Inline panel tweaks */
+#yto-inline-panel{margin:12px 0 18px;padding:12px 16px;background:#fff;border:1px solid #dcdcde;border-radius:8px}
+#yto-inline-panel .desc{margin:6px 0 12px;color:#555d66}
+#yto-inline-panel .row{display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+#yto-inline-panel .row select{min-width:220px}
+#yto-inline-panel .actions{display:flex;gap:8px;align-items:center;margin-top:8px}
+#yto-inline-panel .toggle-link{margin-left:auto}
