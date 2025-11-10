@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Tomatillo Design ~ Yak Term Order
  * Description:       Manually order taxonomy terms (parents + children) with drag-and-drop and globally apply that order via term meta (no DB schema changes).
- * Version:           0.1.1
- * Author:            Tomatillo Design
+ * Version:           1.0.0
+ * Author:            Chris Liu-Beers, Tomatillo Design
  * Author URI:        https://tomatillodesign.com
  * Text Domain:       yak-term-order
  * Domain Path:       /languages
@@ -32,7 +32,7 @@ define( 'YTO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'YTO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin version (bump for cache-busting and migrations).
-define( 'YTO_VERSION', '0.1.1' );
+define( 'YTO_VERSION', '1.0.0' );
 
 // Term meta key used to store sibling order (integer).
 define( 'YTO_META_KEY', '_yak_term_order' );
@@ -48,6 +48,9 @@ define( 'YTO_CAP', 'manage_categories' );
 
 // Internal cache key registry (used so we can clear only our own caches on deactivation).
 define( 'YTO_CACHE_REGISTRY_OPTION', 'yak_term_order_cache_keys' );
+
+// Debug mode: uncomment to enable detailed logging to debug.log.
+// define( 'YTO_DEBUG', true );
 
 
 
