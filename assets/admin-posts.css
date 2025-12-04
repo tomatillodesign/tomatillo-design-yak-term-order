@@ -1,0 +1,180 @@
+/**
+ * Yak Term Order - Post Ordering Styles
+ */
+
+/* Panel styling - compact info bar */
+#yto-post-order-panel {
+	margin: 12px 0 18px;
+	padding: 10px 16px;
+	background: linear-gradient(135deg, #f0f6fc 0%, #fff 100%);
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	border-left: 4px solid #2271b1;
+}
+
+.yto-panel-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.yto-panel-header .yto-drag-icon {
+	color: #2271b1;
+	font-size: 18px;
+	letter-spacing: 2px;
+}
+
+.yto-panel-header strong {
+	font-size: 13px;
+	color: #1d2327;
+}
+
+/* Autosave status indicator */
+.yto-autosave-status {
+	margin-left: auto;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 2px 8px;
+	border-radius: 3px;
+	transition: all 0.2s ease;
+}
+
+.yto-autosave-status.yto-saving {
+	color: #996800;
+	background: #fcf0c3;
+}
+
+.yto-autosave-status.yto-saved {
+	color: #007017;
+	background: #d1f5d6;
+}
+
+.yto-autosave-status.yto-error {
+	color: #8a1616;
+	background: #fce4e4;
+}
+
+/* Drag handle column */
+.column-yto_drag {
+	width: 36px;
+	padding: 8px 4px !important;
+	text-align: center;
+}
+
+.yto-drag-header {
+	color: #8c8f94;
+	font-size: 16px;
+	letter-spacing: 2px;
+}
+
+.yto-drag-handle {
+	display: inline-block;
+	padding: 4px 8px;
+	color: #8c8f94;
+	font-size: 18px;
+	cursor: grab;
+	letter-spacing: 2px;
+	transition: color 0.15s, background-color 0.15s;
+	border-radius: 3px;
+}
+
+.yto-drag-handle:hover {
+	color: #2271b1;
+	background-color: #f0f6fc;
+}
+
+.yto-drag-handle:active {
+	cursor: grabbing;
+}
+
+.yto-order-value {
+	display: none;
+	margin-left: 4px;
+	font-size: 11px;
+	color: #8c8f94;
+}
+
+/* Show order values in ordering mode */
+.yto-ordering-mode .yto-order-value {
+	display: inline;
+}
+
+/* Row being dragged */
+.yto-dragging {
+	background: #f0f6fc !important;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	opacity: 0.95;
+}
+
+.yto-dragging td {
+	background: inherit !important;
+}
+
+/* Placeholder during drag */
+.yto-row-placeholder {
+	background: #e8f4fc !important;
+	border: 2px dashed #2271b1;
+	visibility: visible !important;
+}
+
+.yto-row-placeholder td {
+	visibility: hidden;
+}
+
+/* Ordering mode - highlight the table */
+.yto-ordering-mode #the-list tr {
+	cursor: move;
+	transition: background-color 0.15s;
+}
+
+.yto-ordering-mode #the-list tr:hover {
+	background-color: #f9f9f9;
+}
+
+/* Focus styles for accessibility */
+.yto-drag-handle:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+/* Hide bulk actions and filtering in ordering mode for cleaner UI */
+.yto-ordering-mode .tablenav.top .actions:not(.bulkactions),
+.yto-ordering-mode .tablenav.top .search-box {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* Screen reader text */
+#yto-post-live {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+	#yto-post-order-panel {
+		padding: 10px 12px;
+	}
+	
+	.yto-panel-actions {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.column-yto_drag {
+		width: 30px;
+	}
+	
+	.yto-drag-handle {
+		padding: 4px 6px;
+		font-size: 16px;
+	}
+}
+

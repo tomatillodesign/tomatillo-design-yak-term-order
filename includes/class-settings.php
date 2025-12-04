@@ -30,6 +30,7 @@ class Settings {
 			[ 'sanitize_callback' => [ $this, 'sanitize' ] ]
 		);
 
+		// ——— Term Ordering Section ———
 		add_settings_section(
 			'yto_main',
 			__( 'Term Ordering Settings', 'yak-term-order' ),
@@ -69,6 +70,32 @@ class Settings {
 			[ $this, 'field_secondary' ],
 			'yto_settings',
 			'yto_main'
+		);
+
+		// ——— Post Type Ordering Section ———
+		add_settings_section(
+			'yto_post_order',
+			__( 'Post Type Ordering Settings', 'yak-term-order' ),
+			function () {
+				echo '<p class="description">' . esc_html__( 'Enable drag-and-drop ordering for posts and custom post types. Uses the built-in menu_order field.', 'yak-term-order' ) . '</p>';
+			},
+			'yto_settings'
+		);
+
+		add_settings_field(
+			'post_types',
+			__( 'Enabled post types', 'yak-term-order' ),
+			[ $this, 'field_post_types' ],
+			'yto_settings',
+			'yto_post_order'
+		);
+
+		add_settings_field(
+			'post_autosort_frontend',
+			__( 'Front-end post autosort', 'yak-term-order' ),
+			[ $this, 'field_post_autosort_frontend' ],
+			'yto_settings',
+			'yto_post_order'
 		);
 	}
 
@@ -146,24 +173,66 @@ class Settings {
 		<?php
 	}
 
+	public function field_post_types(): void {
+		$opts    = get_settings();
+		$vals    = is_array( $opts['post_types'] ?? null ) ? $opts['post_types'] : [];
+		$choices = $this->post_type_choices();
+
+		if ( empty( $choices ) ) {
+			echo '<p>' . esc_html__( 'No public post types found.', 'yak-term-order' ) . '</p>';
+			return;
+		}
+
+		echo '<fieldset><legend class="screen-reader-text">' . esc_html__( 'Enabled post types', 'yak-term-order' ) . '</legend>';
+		foreach ( $choices as $slug => $label ) :
+			?>
+			<label style="display:block;margin-bottom:6px;">
+				<input type="checkbox" name="<?php echo esc_attr( YTO_OPTION_KEY ); ?>[post_types][]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, $vals, true ) ); ?> />
+				<?php echo esc_html( $label . " ($slug)" ); ?>
+			</label>
+			<?php
+		endforeach;
+		echo '</fieldset>';
+		echo '<p class="description">' . esc_html__( 'Selected post types will show drag-and-drop ordering on their admin list screens.', 'yak-term-order' ) . '</p>';
+	}
+
+	public function field_post_autosort_frontend(): void {
+		$opts = get_settings();
+		?>
+		<label>
+			<input type="checkbox" name="<?php echo esc_attr( YTO_OPTION_KEY ); ?>[post_autosort_frontend]" value="1" <?php checked( ! empty( $opts['post_autosort_frontend'] ) ); ?> />
+			<?php esc_html_e( 'Automatically order enabled post types by menu_order on the front end', 'yak-term-order' ); ?>
+		</label>
+		<p class="description"><?php esc_html_e( 'When enabled, queries for these post types will default to menu_order sorting. FacetWP templates can use this order.', 'yak-term-order' ); ?></p>
+		<?php
+	}
+
 	// ——— Sanitization ———
 
 	public function sanitize( $input ): array {
 		$defaults = get_settings();
 
 		$out = [
-			'autosort_enabled'  => ! empty( $input['autosort_enabled'] ) ? 1 : 0,
-			'admin_autosort'    => ! empty( $input['admin_autosort'] ) ? 1 : 0,
-			'taxonomies'        => [],
-			'secondary_orderby' => ( isset( $input['secondary_orderby'] ) && 'term_id' === $input['secondary_orderby'] ) ? 'term_id' : 'name',
-			'backend'           => 'meta',
-			'capability'        => $defaults['capability'],
+			'autosort_enabled'      => ! empty( $input['autosort_enabled'] ) ? 1 : 0,
+			'admin_autosort'        => ! empty( $input['admin_autosort'] ) ? 1 : 0,
+			'taxonomies'            => [],
+			'secondary_orderby'     => ( isset( $input['secondary_orderby'] ) && 'term_id' === $input['secondary_orderby'] ) ? 'term_id' : 'name',
+			'backend'               => 'meta',
+			'capability'            => $defaults['capability'],
+			'post_types'            => [],
+			'post_autosort_frontend' => ! empty( $input['post_autosort_frontend'] ) ? 1 : 0,
 		];
 
 		if ( ! empty( $input['taxonomies'] ) && is_array( $input['taxonomies'] ) ) {
 			$allowed = array_keys( $this->taxonomy_choices() );
 			$san     = array_map( 'sanitize_key', $input['taxonomies'] );
 			$out['taxonomies'] = array_values( array_intersect( $san, $allowed ) );
+		}
+
+		if ( ! empty( $input['post_types'] ) && is_array( $input['post_types'] ) ) {
+			$allowed = array_keys( $this->post_type_choices() );
+			$san     = array_map( 'sanitize_key', $input['post_types'] );
+			$out['post_types'] = array_values( array_intersect( $san, $allowed ) );
 		}
 
 		return $out;
@@ -186,6 +255,20 @@ class Settings {
 		if ( taxonomy_exists( 'ob_algorithm_category' ) && ! isset( $choices['ob_algorithm_category'] ) ) {
 			$tax = get_taxonomy( 'ob_algorithm_category' );
 			$choices['ob_algorithm_category'] = $tax ? ( $tax->labels->singular_name ?: $tax->label ) : 'OB Algorithm Category';
+		}
+		ksort( $choices, SORT_NATURAL | SORT_FLAG_CASE );
+		return $choices;
+	}
+
+	private function post_type_choices(): array {
+		$choices = [];
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+		foreach ( $post_types as $pt ) {
+			// Skip attachments - they don't have a standard list table
+			if ( 'attachment' === $pt->name ) {
+				continue;
+			}
+			$choices[ $pt->name ] = $pt->labels->singular_name ?: $pt->label;
 		}
 		ksort( $choices, SORT_NATURAL | SORT_FLAG_CASE );
 		return $choices;

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       Tomatillo Design ~ Yak Term Order
- * Description:       Manually order taxonomy terms (parents + children) with drag-and-drop and globally apply that order via term meta (no DB schema changes).
- * Version:           1.0.0
+ * Description:       Drag-and-drop ordering for taxonomy terms AND posts/custom post types. FacetWP-compatible. Non-destructive storage.
+ * Version:           1.2.0
  * Author:            Chris Liu-Beers, Tomatillo Design
  * Author URI:        https://tomatillodesign.com
  * Text Domain:       yak-term-order
@@ -32,7 +32,7 @@ define( 'YTO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'YTO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin version (bump for cache-busting and migrations).
-define( 'YTO_VERSION', '1.0.0' );
+define( 'YTO_VERSION', '1.2.0' );
 
 // Term meta key used to store sibling order (integer).
 define( 'YTO_META_KEY', '_yak_term_order' );
@@ -123,12 +123,14 @@ register_activation_hook(
 	__FILE__,
 	static function (): void {
 		$defaults = array(
-			'autosort_enabled'  => true,    // apply globally across selected taxonomies.
-			'admin_autosort'    => true,    // also sort admin list tables & pickers.
-			'taxonomies'        => array(), // empty = disabled until user selects.
-			'secondary_orderby' => 'name',  // tiebreaker ('name' or 'term_id').
-			'backend'           => 'meta',  // locked to 'meta' (no schema changes).
-			'capability'        => YTO_CAP, // who may reorder.
+			'autosort_enabled'       => true,    // apply globally across selected taxonomies.
+			'admin_autosort'         => true,    // also sort admin list tables & pickers.
+			'taxonomies'             => array(), // empty = disabled until user selects.
+			'secondary_orderby'      => 'name',  // tiebreaker ('name' or 'term_id').
+			'backend'                => 'meta',  // locked to 'meta' (no schema changes).
+			'capability'             => YTO_CAP, // who may reorder.
+			'post_types'             => array(), // post types with ordering enabled.
+			'post_autosort_frontend' => false,   // auto-order posts by menu_order on front end.
 		);
 
 		$current = get_option( YTO_OPTION_KEY );

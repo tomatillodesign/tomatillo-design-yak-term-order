@@ -10,12 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
  */
 function get_settings(): array {
 	$defaults = [
-		'autosort_enabled'  => true,
-		'admin_autosort'    => true,
-		'taxonomies'        => [],
-		'secondary_orderby' => 'name', // or 'term_id'
-		'backend'           => 'meta',
-		'capability'        => defined('YTO_CAP') ? YTO_CAP : 'manage_categories',
+		'autosort_enabled'       => true,
+		'admin_autosort'         => true,
+		'taxonomies'             => [],
+		'secondary_orderby'      => 'name', // or 'term_id'
+		'backend'                => 'meta',
+		'capability'             => defined('YTO_CAP') ? YTO_CAP : 'manage_categories',
+		'post_types'             => [],
+		'post_autosort_frontend' => false,
 	];
 	$saved = get_option( YTO_OPTION_KEY );
 	return is_array( $saved ) ? array_merge( $defaults, $saved ) : $defaults;

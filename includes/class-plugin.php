@@ -21,12 +21,12 @@ final class Plugin {
 		// Settings first so options are available to other modules on admin_init.
 		if ( is_admin() ) {
 			new Settings( $cfg );
-            new Inline_Order( $cfg ); // <— add this to embed on edit-tags.php
+			new Inline_Order( $cfg ); // Drag-and-drop on edit-tags.php (term ordering)
 		}
 
-		new Autosort( $cfg ); // global ordering via termmeta (front + admin, per settings)
-		new Admin_UI( $cfg ); // minimal numeric field on term screens (for enabled taxonomies)
-        
+		new Autosort( $cfg );    // Global term ordering via termmeta (front + admin, per settings)
+		new Admin_UI( $cfg );    // Minimal numeric field on term screens (for enabled taxonomies)
+		new Post_Order( $cfg );  // Post/CPT ordering via menu_order (admin UI + FacetWP)
 	}
 
 	public function cfg( string $key, $default = null ) {
